@@ -1,7 +1,10 @@
 const cards = document.querySelectorAll('.card');
+const playAgain = document.getElementById('playAgain');
 let hasFlippedCard = false;
 let firstCard, secondCard;
 let lockBoard = false;
+let numberOfAttempts = 10;
+
 
 //função para virar carta
 function flipCard() {
@@ -23,10 +26,18 @@ function flipCard() {
 //função que checa se as cartas são iguais
 function checkForMatch() {
     if(firstCard.dataset.card === secondCard.dataset.card) {
+        playSound();
         disableCards();
         return;
     }
 
+    if (numberOfAttempts == 0) {
+        //unflipCards();
+        clearBoard();
+    }
+
+    console.log(numberOfAttempts);
+    numberOfAttempts--;
     unflipCards();
 }
 
@@ -47,7 +58,7 @@ function unflipCards() {
         secondCard.classList.remove('flip');
 
         resetBoard();
-    }, 1500);
+    }, 1000);
 }
 
 //função que reseta o tabuleiro
@@ -68,3 +79,26 @@ function resetBoard() {
 cards.forEach((card) => {
     card.addEventListener('click', flipCard)
 });
+
+//adiciona evento de jogar novamente
+playAgain.addEventListener('click',reloadPage);
+
+function reloadPage()
+{
+    location.reload();
+
+}
+
+function clearBoard(){
+    resetBoard();
+    cards.forEach((card) => {
+        card.removeEventListener('click', flipCard)
+    });
+}
+
+function playSound() {
+    var audio = new Audio(
+'https://media.geeksforgeeks.org/wp-content/uploads/20190531135120/beep.mp3');
+    audio.play();
+}
+
